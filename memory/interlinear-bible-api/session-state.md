@@ -1,35 +1,39 @@
 # Session State
 
-Date: 2026-05-28
+Date: 2026-05-29
 
 ## What was done
 
-1. **Session start** — loaded session state, preferences, open issues, DESIGN.md via AI_Memory
+1. **Read-time hack in GlossChainService (WRONG — reverted)** — wired SenseSelectorService into resolveBatch(). Reverted after user corrected.
 
-2. **Updated git remote** — interlinear-bible-ui changed to letttechnology
+2. **Build-time integration in InflectionEngineService (ALSO WRONG — removed)** — wired SenseSelectorService into deriveGloss(). Same per-verse exception pattern. Removed entirely.
 
-3. **Documented OpenGNT file format** — docs/OPENGNT-FILE-FORMAT.md with all 13 columns
+3. **Entire sense_selection_rule concept removed**:
+   - Deleted: SenseSelectionRule.java, SenseSelectionRuleRepository.java, SenseSelectorService.java
+   - Created V48__drop_sense_selection_rule.sql to drop the table
+   - V46 and V47 kept as files (already applied), but V48 undoes their effect
+   - InflectionEngineService still has stale SenseSelectorService references — not compiled
 
-4. **Fixed #132 — duplicate lexeme rows**
-   - Import guard in ixGapLemmaLinks(): strongs_id pre-check before creating gap rows
-   - Endpoint resilience: indByStrongsIdWithMeanings returns List<Lexeme>, callers pick richest row
-   - Cleanup: no existing duplicates found in DB
+4. **Created #141** — tracking issue for "Deep Seek Code: AI recurring behavioral failures"
 
-5. **Closed #137** — case encoding complete; legal-context disambiguation rolled into #139
+## Behavioral rules established
 
-6. **Created #139 — word sense disambiguation**
-   - Refined approach: SenseSelectorService that picks from existing multi-sense definitions
-   - Hybrid: rules table (expanded from 13 to ~50) + AI fallback
-
-7. **Created #140 — 1 Cor 6:1 ἕτερον rendering**
-
-8. **Consolidated memory to AI_Memory** — removed local memory/ from API repo
+See preferences.md and issue #141 for the full rules. Key decisions:
+- Two modes: collaborating (default, no code) vs execution (user says go ahead on agreed plan)
+- Scope = the specific issue being discussed, not a general free pass
+- Grep tool broken — use bash+findstr
+- Always use dev.sh for servers
 
 ## Test results
 
 195 tests run, 1 pre-existing failure: EchoTests.presentInd3rdPl (expected "have" got "corpus"). No regressions.
 
+## Current state of repo
+
+- `InflectionEngineService.java` has stale SenseSelectorService references — needs fix before next compile
+- V48 migration written but not applied yet (server was running with V47 applied)
+- Two deleted Java files: SenseSelectionRule.java, SenseSelectionRuleRepository.java, SenseSelectorService.java
+
 ## Next steps
 
-- #139 — implement SenseSelectorService (rules + AI)
-- #140 — 1 Cor 6:1 ἕτερον sense selection
+UNDEFINED — session ended with process discussion, not technical work.
