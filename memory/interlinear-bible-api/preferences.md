@@ -33,9 +33,9 @@ When the user says "go ahead" or "do what you think" in context of an issue, it 
 
 If the user corrects a change and asks if it is right: answer the question. Do not start fixing it. Wait for instruction.
 
-## Rule 3 — Grep tool is broken. bash+findstr only.
+## Rule 3 — Grep tool uses rg internally. Now fixed.
 
-The Grep tool calls Expand-Archive internally which cannot load on this Windows system. I cannot fix the tool. The workaround: `bash` + `findstr` for all content searches. Never use the Grep tool.
+The Grep tool depends on `ripgrep` (rg), which was not installed. Fixed by installing rg 15.1.0 via winget. Grep tool now works correctly.
 
 ## Rule 4 — Always use dev.sh for servers.
 
